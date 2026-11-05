@@ -71,6 +71,13 @@ with sync_playwright() as p:
                 if menu.is_visible():
                     menu.click()
                     expect(page.get_by_role('navigation',name='Main',exact=True)).to_be_visible()
+                    page.get_by_role('navigation',name='Main',exact=True).get_by_role('link',name='Request a Demo',exact=True).click()
+                    mobile_email=page.evaluate('window.lastEmailClick')
+                    assert not mobile_email['alreadyPrevented']
+                    assert parse_qs(urlparse(mobile_email['href']).query)['subject']==['SecureKnow Demo Request']
+                    assert 'Preferred meeting date:' in parse_qs(urlparse(mobile_email['href']).query)['body'][0]
+                    expect(menu).to_have_attribute('aria-expanded','false')
+                    menu.click()
                     page.get_by_role('button',name='Close menu',exact=True).press('Escape')
                     expect(page.get_by_role('button',name='Menu',exact=True)).to_be_focused()
             scan(f'{route.strip("/") or "home"}-{width}')
@@ -115,13 +122,19 @@ with sync_playwright() as p:
                 page.get_by_role('tab',name='Monitoring Agent',exact=True).click()
                 page.get_by_role('button',name='Preview review list',exact=True).click()
                 expect(page.get_by_text('No notification was sent',exact=False)).to_be_visible()
+                page.get_by_role('button',name='Hide sample review list',exact=True).click()
+                expect(page.get_by_text('No notification was sent',exact=False)).not_to_be_visible()
                 page.get_by_role('tab',name='Research Agent',exact=True).click()
                 page.get_by_role('button',name='Preview research brief',exact=True).click()
                 expect(page.get_by_role('heading',name='Sample findings')).to_be_visible()
+                page.get_by_role('button',name='Hide sample brief',exact=True).click()
+                expect(page.get_by_role('heading',name='Sample findings')).not_to_be_visible()
                 page.get_by_role('tab',name='Governance',exact=True).click()
                 page.get_by_role('button',name='Preview review',exact=True).click()
                 page.get_by_role('button',name='Preview publication',exact=True).click()
                 expect(page.get_by_role('heading',name='Published / eligible only after permission checks')).to_be_visible()
+                page.get_by_role('button',name='Reset governance example',exact=True).click()
+                expect(page.get_by_role('heading',name='Draft / not eligible for answers')).to_be_visible()
                 page.get_by_role('tab',name='IT Workflow',exact=True).click()
                 page.get_by_role('button',name='Prepare example ticket',exact=True).click()
                 page.get_by_label('Example ticket summary',exact=True).fill('')
