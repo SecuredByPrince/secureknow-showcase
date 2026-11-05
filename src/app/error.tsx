@@ -1,0 +1,2 @@
+'use client';
+export default function ErrorPage({reset}:{reset:()=>void}) {return <section className="container section prose" role="alert"><h1>The preview could not be displayed.</h1><p>Try again or return to the homepage. No request has been submitted.</p><div className="button-row"><button className="button" type="button" onClick={reset}>Try again</button><a className="button secondary" href="/">Back to SecureKnow</a></div></section>;}
