@@ -5,6 +5,17 @@ import {resolve} from 'node:path';
 import {CONTACT,emailLink,subjects,roadmap} from '../src/lib/content.ts';
 import {DEMOS,exampleDecision,validDraft,WORKFLOW_STEPS} from '../src/lib/demo.ts';
 import {validateEnvironment} from '../scripts/environment.mjs';
+test('Netlify static deployment uses out, parity security headers and a required production origin',()=>{
+    const config=readFileSync(new URL('../netlify.toml',import.meta.url),'utf8');
+    assert.match(config,/command = "npm run build"/);assert.match(config,/publish = "out"/);
+    assert(!/redirect|functions|repo.*reference-architecture/.test(config));
+    const headers=readFileSync(new URL('../public/_headers',import.meta.url),'utf8');
+    const vercel=JSON.parse(readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
+    for(const header of vercel.headers[0].headers)assert(headers.includes(`${header.key}: ${header.value}`));
+    assert.throws(()=>validateEnvironment({CONTEXT:'production'}),/Production showcase/);
+    validateEnvironment({CONTEXT:'production',NEXT_PUBLIC_SHOWCASE_ORIGIN:'https://secureknow-preview.netlify.app'});
+    validateEnvironment({CONTEXT:'deploy-preview'});
+});
 test('Partnership, sponsorship and demo mail links encode the exact suggested messages',()=>{
     const expected={
         partner:"Hello SecureKnow Team,\n\nI'm interested in exploring a partnership with SecureKnow.\n\nMy name:\nOrganisation:\nPartnership interest:\nAdditional details:\n\nI look forward to hearing from you.",

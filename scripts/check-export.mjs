@@ -20,7 +20,7 @@ export async function checkExport(base=root) {
     await stat(resolve(out,'social-preview.png'));
     assert(files.length>0);
     const source=await filesIn(resolve(base,'src'));
-    for(const file of source){const content=await readFile(file,'utf8');assert(!/fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|next\/headers|['"]use server['"]|@azure\/|localStorage|sessionStorage|process\.env\.(?!NEXT_PUBLIC_SHOWCASE_ORIGIN|VERCEL_ENV)/.test(content),`Network, private identity or persistence API in public source: ${relative(base,file)}`);}
+    for(const file of source){const content=await readFile(file,'utf8');assert(!/fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|next\/headers|['"]use server['"]|@azure\/|localStorage|sessionStorage|process\.env\.(?!NEXT_PUBLIC_SHOWCASE_ORIGIN|VERCEL_ENV|CONTEXT)/.test(content),`Network, private identity or persistence API in public source: ${relative(base,file)}`);}
     console.log(`PASS public export: ${files.length} files; four public pages; no private routes, source maps, API/configuration markers or client network/storage APIs.`);
     return files;
 }

@@ -4,7 +4,7 @@ export function validateEnvironment(env) {
         throw new Error('Private application configuration is forbidden in the public showcase. Remove it from this build environment.');
     }
     const value = env.NEXT_PUBLIC_SHOWCASE_ORIGIN;
-    if(env.VERCEL_ENV==='production'&&!value)throw new Error('Production showcase requires an explicitly approved public origin.');
+    if((env.VERCEL_ENV==='production'||env.CONTEXT==='production')&&!value)throw new Error('Production showcase requires an explicitly approved public origin.');
     if (value) {
         const url = new URL(value);
         if (url.protocol !== 'https:' || value !== url.origin || url.username || url.password || url.pathname !== '/' || url.search || url.hash || /(?:localhost|\.local$|\.internal$|\.invalid$)/i.test(url.hostname) || !url.hostname.includes('.') || /^[\d.:\[\]]+$/.test(url.hostname)) {

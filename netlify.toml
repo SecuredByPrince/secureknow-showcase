@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+[context.production.environment]
+  NEXT_PUBLIC_SHOWCASE_ORIGIN = "https://secureknow-preview.netlify.app"

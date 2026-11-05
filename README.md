@@ -68,3 +68,13 @@ The Python browser QA helper uses the private workspace's existing Playwright/ax
 `SHOWCASE_BASE_URL` selects the host under test. It is not part of the hosted website.
 `release:prepare` is a private-workspace staging helper and performs no Git or deployment
 operation. Publishing always requires reviewed source and secret/privacy checks.
+
+## Netlify
+
+The existing project is `secureknow-preview` in the `secured` team. Link only
+`SecuredByPrince/secureknow-showcase`, branch `main`, with an empty base directory.
+`netlify.toml` records `npm run build`, publish `out`, Node 24 and the public production
+origin. `public/_headers` carries the same restrictive security policy as the local QA
+server. There is no catch-all SPA rewrite or backend route. Netlify preview/branch
+contexts remain noindex. Preserve the existing project URL when relinking repositories.
+The Python reference repository is documentation and examples, not this website.

@@ -9,7 +9,7 @@ export const metadata:Metadata={
     description:'Turn authorised organisational knowledge into trusted answers, verified decisions and controlled business actions. Explore the SecureKnow early access product preview.',
     applicationName:'SecureKnow',
     alternates:{canonical:'/'},
-    robots:{index:Boolean(origin)&&process.env.VERCEL_ENV!=='preview',follow:Boolean(origin)&&process.env.VERCEL_ENV!=='preview'},
+    robots:{index:Boolean(origin)&&process.env.VERCEL_ENV!=='preview'&&!['deploy-preview','branch-deploy'].includes(process.env.CONTEXT??''),follow:Boolean(origin)&&process.env.VERCEL_ENV!=='preview'&&!['deploy-preview','branch-deploy'].includes(process.env.CONTEXT??'')},
     openGraph:{type:'website',locale:'en_GB',siteName:'SecureKnow',title:'SecureKnow — Trusted Knowledge. Verified Decisions. Authorised Action.',description:'The Trust and Action Layer for Enterprise AI. An early access product preview.',images:[{url:'/social-preview.png',width:1200,height:630,alt:'SecureKnow — The Trust and Action Layer for Enterprise AI'}]},
     twitter:{card:'summary_large_image',title:'SecureKnow — The Trust and Action Layer for Enterprise AI',images:['/social-preview.png']},
     icons:{icon:'/icon.svg'},
