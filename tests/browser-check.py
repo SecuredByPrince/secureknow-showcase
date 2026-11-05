@@ -26,6 +26,10 @@ with sync_playwright() as p:
     page.on('console', lambda message: console_errors.append(message.text) if message.type == 'error' else None)
     page.on('requestfailed', lambda request: failures.append(request.url))
     page.on('request', lambda request: requests.append(request.url))
+    page.add_init_script("""document.addEventListener('click',event=>{
+        const link=event.target.closest('a[href^="mailto:"]');
+        if(link){window.lastEmailClick={href:link.href,alreadyPrevented:event.defaultPrevented};event.preventDefault();}
+    });""")
 
     def scan(label):
         global scans
@@ -74,6 +78,26 @@ with sync_playwright() as p:
                 parsed = urlparse(href)
                 assert parsed.path == 'securedbyprince@gmail.com'
                 assert parse_qs(parsed.query)['subject'][0].startswith('SecureKnow ')
+                subject=parse_qs(parsed.query)['subject'][0]
+                if subject in ['SecureKnow Partnership Enquiry','SecureKnow Sponsorship Enquiry','SecureKnow Demo Request']:
+                    body=parse_qs(parsed.query)['body'][0]
+                    assert body.startswith('Hello SecureKnow Team,\n\n') and 'My name:\nOrganisation:' in body
+            for link in page.locator('a[href^="mailto:"]').all():
+                if not link.is_visible():
+                    continue
+                expected=link.get_attribute('href')
+                link.click()
+                clicked=page.evaluate('window.lastEmailClick')
+                assert clicked['href']==expected and not clicked['alreadyPrevented']
+            copy=page.get_by_role('button',name='Copy email address',exact=True).first
+            copy.focus()
+            copy.press('Enter')
+            expect(page.get_by_text('Email address copied.',exact=True)).to_be_visible()
+            if route == '/partners/':
+                page.evaluate("Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:()=>Promise.reject(new Error('Test permission denied'))}})")
+                copy.press('Enter')
+                expect(page.get_by_text('Copy is unavailable here.',exact=False)).to_be_visible()
+                assert page.get_by_role('link',name='securedbyprince@gmail.com',exact=True).count()>=1
             if route == '/demo/':
                 for name in ['Governance','Policy Decisions','Research Agent','Monitoring Agent','IT Workflow','Trust Passport','AI Assistant']:
                     page.get_by_role('tab',name=name,exact=True).click()
@@ -111,7 +135,7 @@ with sync_playwright() as p:
                 expect(page.get_by_role('button',name='Submit ticket / unavailable',exact=True)).to_be_disabled()
                 scan(f'workflow-unavailable-{width}')
                 page.get_by_role('button',name='Cancel example draft',exact=True).click()
-                expect(page.get_by_role('status')).to_contain_text('Nothing was submitted or stored')
+                expect(page.locator('.demo-stack [role="status"]')).to_contain_text('Nothing was submitted or stored')
         print(f'PASS public pages, demos, failure and safe-rendering journeys, axe and responsive checks: {width}px',flush=True)
 
     checked = set()

@@ -5,6 +5,22 @@ import {resolve} from 'node:path';
 import {CONTACT,emailLink,subjects,roadmap} from '../src/lib/content.ts';
 import {DEMOS,exampleDecision,validDraft,WORKFLOW_STEPS} from '../src/lib/demo.ts';
 import {validateEnvironment} from '../scripts/environment.mjs';
+test('Partnership, sponsorship and demo mail links encode the exact suggested messages',()=>{
+    const expected={
+        partner:"Hello SecureKnow Team,\n\nI'm interested in exploring a partnership with SecureKnow.\n\nMy name:\nOrganisation:\nPartnership interest:\nAdditional details:\n\nI look forward to hearing from you.",
+        sponsor:"Hello SecureKnow Team,\n\nI'm interested in learning more about sponsorship opportunities for SecureKnow.\n\nMy name:\nOrganisation:\nArea of sponsorship:\nAdditional details:\n\nThank you.",
+        demo:"Hello SecureKnow Team,\n\nI'd like to request a demonstration of SecureKnow.\n\nMy name:\nOrganisation:\nPreferred meeting date:\nWhat I'd like to explore:\n\nThank you.",
+    };
+    for(const [kind,body] of Object.entries(expected)){
+        const href=emailLink(kind),url=new URL(href);
+        assert.equal(url.pathname,'securedbyprince@gmail.com');
+        assert.equal(url.searchParams.get('subject'),subjects[kind]);
+        assert.equal(url.searchParams.get('body'),body);
+        assert(href.includes('&body='+encodeURIComponent(body)));
+        assert(!href.includes('\n'));
+    }
+    assert.equal(new URL(emailLink('support')).searchParams.get('body'),null);
+});
 test('Partnership hero CTA opens the public partners page instead of email',()=>{const home=readFileSync(new URL('../src/app/page.tsx',import.meta.url),'utf8');assert.match(home,/href="\/partners\/">Partner With Us/);assert(!/href="#"/.test(home));});
 test('Every enquiry uses the approved email and exact encoded subject',()=>{assert.equal(CONTACT,'securedbyprince@gmail.com');const expected={partner:'SecureKnow Partnership Enquiry',sponsor:'SecureKnow Sponsorship Enquiry',demo:'SecureKnow Demo Request',pilot:'SecureKnow Pilot Interest',support:'SecureKnow Support Enquiry'};for(const [key,value]of Object.entries(expected)){const url=new URL(emailLink(key));assert.equal(url.protocol,'mailto:');assert.equal(url.pathname,CONTACT);assert.equal(url.searchParams.get('subject'),value);}for(const key of Object.keys(subjects))assert(emailLink(key).startsWith('mailto:'+CONTACT+'?subject='));});
 test('Example decisions keep authority and execution separate',()=>{assert.equal(exampleDecision('ordinary').outcome,'ALLOW');assert.equal(exampleDecision('sensitive').outcome,'APPROVAL_REQUIRED');assert.equal(exampleDecision('outside').outcome,'DENY');assert(exampleDecision('ordinary').obligations.includes('Employee confirmation'));assert(exampleDecision('ordinary').obligations.includes('Execution unavailable'));assert(exampleDecision('sensitive').obligations.includes('Independent authorised approver'));});

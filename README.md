@@ -44,7 +44,9 @@ future agents and live Microsoft Foundry/Azure AI Search integrations remain unv
 Visit `/partners/` for Azure/cloud and model-compute sponsorship, mentorship, security and
 architecture review, enterprise pilots, product collaboration and strategic funding.
 Official contact for all enquiries: **securedbyprince@gmail.com**.
-Contact links open the visitor's email application with the relevant subject. There is no
+Contact links open the visitor's email application with the relevant subject and suggested
+message for partnership, sponsorship and demo requests. A copy-email button supports
+visitors without an email handler. There is no
 contact form, email service, interest-list database, analytics or delivery confirmation.
 
 ## Deployment

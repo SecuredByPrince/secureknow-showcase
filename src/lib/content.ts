@@ -6,8 +6,14 @@ export const subjects = {
     general: 'SecureKnow General Enquiry',
     collaborate: 'SecureKnow Collaboration Enquiry', investment: 'SecureKnow Investment Enquiry',
 } as const;
+export const messages = {
+    partner: "Hello SecureKnow Team,\n\nI'm interested in exploring a partnership with SecureKnow.\n\nMy name:\nOrganisation:\nPartnership interest:\nAdditional details:\n\nI look forward to hearing from you.",
+    sponsor: "Hello SecureKnow Team,\n\nI'm interested in learning more about sponsorship opportunities for SecureKnow.\n\nMy name:\nOrganisation:\nArea of sponsorship:\nAdditional details:\n\nThank you.",
+    demo: "Hello SecureKnow Team,\n\nI'd like to request a demonstration of SecureKnow.\n\nMy name:\nOrganisation:\nPreferred meeting date:\nWhat I'd like to explore:\n\nThank you.",
+} as const;
 export function emailLink(kind: keyof typeof subjects) {
-    return `mailto:${CONTACT}?subject=${encodeURIComponent(subjects[kind])}`;
+    const body = kind in messages ? messages[kind as keyof typeof messages] : undefined;
+    return `mailto:${CONTACT}?subject=${encodeURIComponent(subjects[kind])}${body ? `&body=${encodeURIComponent(body)}` : ''}`;
 }
 export const capabilities = [
     {icon:'knowledge',name:'Enterprise knowledge',status:'Locally validated',text:'Permission-aware answers grounded in published, version-specific evidence.'},
