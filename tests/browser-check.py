@@ -22,10 +22,12 @@ with sync_playwright() as p:
     errors = []
     console_errors = []
     failures = []
+    http_errors = []
     requests = []
     page.on('pageerror', lambda error: errors.append(str(error)))
     page.on('console', lambda message: console_errors.append(message.text) if message.type == 'error' else None)
     page.on('requestfailed', lambda request: failures.append(request.url))
+    page.on('response', lambda response: http_errors.append({'url':response.url,'status':response.status}) if response.status>=400 else None)
     page.on('request', lambda request: requests.append(request.url))
     page.add_init_script("""document.addEventListener('click',event=>{
         const link=event.target.closest('a[href^="mailto:"]');
@@ -174,10 +176,21 @@ with sync_playwright() as p:
         assert "connect-src 'none'" in response.headers['content-security-policy']
     assert page.request.post(BASE+'/api/v1/dev/token',data={}).status in [404,405]
     assert page.request.get(BASE+'/social-preview.png').status == 200
+    if urlparse(BASE).scheme == 'https':
+        page.goto(BASE+'/partners/')
+        assert page.reload().status == 200
+        assert page.locator('link[rel="canonical"]').get_attribute('href')==BASE+'/partners/'
+        assert page.locator('meta[property="og:image"]').get_attribute('content')==BASE+'/social-preview.png'
+        robots=page.request.get(BASE+'/robots.txt')
+        assert robots.status==200 and 'Allow: /' in robots.text() and 'Disallow: /' not in robots.text()
+        sitemap=page.request.get(BASE+'/sitemap.xml')
+        assert sitemap.status==200 and sitemap.text().count('<loc>')==4
+        assert BASE+'/partners/' in sitemap.text() and '.invalid' not in sitemap.text()
     assert not errors, errors
     assert not console_errors, console_errors
     assert not failures, failures
+    assert not http_errors, http_errors
     assert all(urlparse(url).netloc == urlparse(BASE).netloc for url in requests), 'Unexpected external/backend browser request'
-    (OUT/'summary.json').write_text(json.dumps({'base_url':BASE,'scans':scans,'violations':0,'runtime_errors':errors,'console_errors':console_errors,'failed_requests':failures,'internal_links':len(checked),'widths':[1440,1024,768,390]},indent=2))
+    (OUT/'summary.json').write_text(json.dumps({'base_url':BASE,'scans':scans,'violations':0,'runtime_errors':errors,'console_errors':console_errors,'failed_requests':failures,'http_errors':http_errors,'internal_links':len(checked),'widths':[1440,1024,768,390]},indent=2))
     print(f'PASS {scans} axe scans; internal links, email recipient, private-route isolation, no backend/external browser requests',flush=True)
     browser.close()
