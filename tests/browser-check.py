@@ -18,6 +18,7 @@ scans = 0
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page(reduced_motion='reduce')
+    page.context.grant_permissions(['clipboard-write'])
     errors = []
     console_errors = []
     failures = []
@@ -88,7 +89,11 @@ with sync_playwright() as p:
                 expected=link.get_attribute('href')
                 link.click()
                 clicked=page.evaluate('window.lastEmailClick')
-                assert clicked['href']==expected and not clicked['alreadyPrevented']
+                actual_url,expected_url=urlparse(clicked['href']),urlparse(expected)
+                # Browsers normalise apostrophes to %27 when serialising mailto URLs.
+                assert actual_url.path==expected_url.path
+                assert parse_qs(actual_url.query)==parse_qs(expected_url.query)
+                assert not clicked['alreadyPrevented']
             copy=page.get_by_role('button',name='Copy email address',exact=True).first
             copy.focus()
             copy.press('Enter')
