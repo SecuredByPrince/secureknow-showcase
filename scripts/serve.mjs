@@ -18,4 +18,6 @@ const server=createServer(async(req,res)=>{
         const body=await readFile(file);res.writeHead(200,{'Content-Type':mime[extname(file)]??'application/octet-stream'});res.end(req.method==='HEAD'?undefined:body);
     }catch{res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});res.end(req.method==='HEAD'?undefined:await readFile(resolve(root,'404.html')));}
 });
-server.listen(3101,'127.0.0.1',()=>console.log('Public showcase export: http://127.0.0.1:3101 (enterprise 3001/8000 untouched)'));
+const port=Number(process.env.PORT??3101);
+if(!Number.isInteger(port)||port<1||port>65535)throw new Error('Invalid local preview port');
+server.listen(port,'127.0.0.1',()=>console.log(`Public showcase export: http://127.0.0.1:${port} (enterprise 3001/8000 untouched)`));

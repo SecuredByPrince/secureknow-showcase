@@ -6,7 +6,7 @@ const origin=process.env.NEXT_PUBLIC_SHOWCASE_ORIGIN;
 export const metadata:Metadata={
     metadataBase:new URL(origin??'https://secureknow.invalid'),
     title:{default:'SecureKnow — The Trust and Action Layer for Enterprise AI',template:'%s | SecureKnow'},
-    description:'Turn authorised organisational knowledge into trusted answers, verified decisions and controlled business actions. Explore the SecureKnow early access product preview.',
+    description:'Turn approved knowledge into evidence-backed AI answers, policy-checked decisions and human-controlled workflows. Explore the SecureKnow synthetic early access preview.',
     applicationName:'SecureKnow',
     alternates:{canonical:'/'},
     robots:{index:Boolean(origin)&&process.env.VERCEL_ENV!=='preview'&&!['deploy-preview','branch-deploy'].includes(process.env.CONTEXT??''),follow:Boolean(origin)&&process.env.VERCEL_ENV!=='preview'&&!['deploy-preview','branch-deploy'].includes(process.env.CONTEXT??'')},
@@ -14,4 +14,4 @@ export const metadata:Metadata={
     twitter:{card:'summary_large_image',title:'SecureKnow — The Trust and Action Layer for Enterprise AI',images:['/social-preview.png']},
     icons:{icon:'/icon.svg'},
 };
-export default function Layout({children}:{children:React.ReactNode}) {return <html lang="en-GB"><body><a className="skip-link" href="#main">Skip to content</a><Header/><main id="main">{children}</main><Footer/></body></html>;}
+export default function Layout({children}:{children:React.ReactNode}) {return <html lang="en-GB"><body><a className="skip-link" href="#main">Skip to content</a><Header/><main id="main" tabIndex={-1}>{children}</main><Footer/></body></html>;}

@@ -1,11 +1,11 @@
 # SecureKnow 3.0 public showcase
 
-**SecureKnow ? The Trust and Action Layer for Enterprise AI.**
+**SecureKnow — The Trust and Action Layer for Enterprise AI.**
 
 Trusted Knowledge. Verified Decisions. Authorised Action.
 
 Explore how authorised organisational knowledge can support trusted answers, verified
-decisions and controlled business actions: **Know ? Verify ? Approve ? Act ? Prove**.
+decisions and controlled business actions: **Know → Verify → Approve → Act → Prove**.
 
 This standalone Next.js static website presents seven synthetic product previews and
 partnership opportunities. It includes no enterprise login, private workspace, backend
@@ -71,6 +71,8 @@ operation. Publishing always requires reviewed source and secret/privacy checks.
 
 ## Netlify
 
+Public website: [SecureKnow product preview](https://secureknow-preview.netlify.app).
+
 The existing project is `secureknow-preview` in the `secured` team. Link only
 `SecuredByPrince/secureknow-showcase`, branch `main`, with an empty base directory.
 `netlify.toml` records `npm run build`, publish `out`, Node 24 and the public production
@@ -78,3 +80,15 @@ origin. `public/_headers` carries the same restrictive security policy as the lo
 server. There is no catch-all SPA rewrite or backend route. Netlify preview/branch
 contexts remain noindex. Preserve the existing project URL when relinking repositories.
 The Python reference repository is documentation and examples, not this website.
+
+## Browser regression checks
+
+`tests/production-check.py` uses Playwright Chromium and axe-core supplied by your QA
+environment. Set `SHOWCASE_QA_ROOT` to that environment, or set `AXE_PATH` explicitly.
+Set `SHOWCASE_BASE_URL` to the local export or production origin and run
+`python tests/browser-check.py`. Screenshots and JSON evidence go to
+`SHOWCASE_QA_OUTPUT`. The suite checks all seven previews, actual links, encoded email
+templates, clipboard success/fallback, keyboard navigation, static routes, isolation,
+header offsets and overflow at 1440, 1024, 768, 390 and 320 pixels.
+Email application launch depends on the visitor's configured handler; tests validate
+the recipient, subject and body without sending mail.

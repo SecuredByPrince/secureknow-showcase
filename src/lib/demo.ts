@@ -8,6 +8,30 @@ export const DEMOS = [
     {id:'passport',label:'Trust Passport',title:'The story behind a decision'},
 ] as const;
 export type DemoId = typeof DEMOS[number]['id'];
+export function parsePreview(value:string|null):DemoId {return DEMOS.find(item=>item.id===value)?.id??'assistant';}
+export function previewLink(id:DemoId) {return `/demo/?preview=${id}#product-preview`;}
+export const sampleQuestions = [
+    {id:'vpn',question:'What should I try before reporting a VPN issue?',answer:'Restart the approved VPN client and note the error code. If the issue continues, prepare an IT support request. Never share passwords or recovery codes.',source:'VPN Support Guide',version:'Published v2 / section 3',evidence:'Restart the approved VPN client. Record the error code for the service desk.',eligible:true},
+    {id:'equipment',question:'How do I request specialist equipment?',answer:'The sample policy requires a reviewed specialist-equipment request. A manager approval boundary applies before procurement; no purchase or approval is performed here.',source:'Equipment Policy',version:'Published v3 / section 2',evidence:'Specialist equipment requires a documented request and independent manager approval.',eligible:true},
+    {id:'unavailable',question:'Can I see the confidential payroll file?',answer:'No eligible sample evidence is available. This example abstains instead of inventing an answer or exposing a restricted source.',source:null,version:null,evidence:null,eligible:false},
+] as const;
+export function sampleAnswer(id:string) {return sampleQuestions.find(item=>item.id===id)??sampleQuestions[2];}
+export const researchDocuments = [
+    {id:'equipment',title:'Equipment Policy / v3',text:'Standard laptops are supplied. Specialist devices require manager approval.'},
+    {id:'onboarding',title:'Onboarding Guide / v2',text:'New starters receive a standard laptop. Procurement lead times are not specified.'},
+    {id:'remote',title:'Remote Work Guide / v2',text:'Use approved devices remotely. Specialist requests follow the equipment policy.'},
+] as const;
+export function compareSamples(first:string,second:string) {
+    const a=researchDocuments.find(item=>item.id===first),b=researchDocuments.find(item=>item.id===second);
+    if(!a||!b||a===b)return null;
+    return {sources:[a,b],finding:'The samples distinguish approved standard equipment from specialist requests.',gap:'Neither selected sample establishes a complete procurement lead time or confirmed approval outcome.'};
+}
+export const reviewDocuments = [
+    {title:'Access Review Guide / v1',days:-4,owner:'Security Operations'},
+    {title:'VPN Support Guide / v2',days:1,owner:'IT Operations'},
+    {title:'Equipment Policy / v3',days:15,owner:'Workplace Services'},
+] as const;
+export function reviewSamples(windowDays:number) {return reviewDocuments.filter(item=>item.days<=windowDays);}
 export const journey = [
     {name:'Know',text:'Start with published information the employee is authorised to read.',visual:'VPN Support Guide · published v2 · sample evidence'},
     {name:'Verify',text:'Recheck evidence eligibility and evaluate an action-specific backend rule.',visual:'Identity + workspace + resource + policy version'},

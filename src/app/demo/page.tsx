@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
 import { DemoShowcase } from '../../components/demos';
 import { Eyebrow, EmailCTA } from '../../components/primitives';
-export const metadata:Metadata={alternates:{canonical:"/demo/"},title:'Interactive Product Preview',description:'Explore safe, synthetic examples of SecureKnow knowledge, governance, policy decisions, agents, workflows and Trust Passports.'};
+export const metadata:Metadata={alternates:{canonical:"/demo/"},title:'Synthetic Interactive Product Preview',description:'Try seven deterministic SecureKnow demonstrations with fictional evidence, policy outcomes and human-control boundaries. No live AI or execution.',robots:{index:false,follow:true}};
 export default function Demo(){return <div className="container demo-page"><div className="section-heading"><div><Eyebrow>Explore SecureKnow</Eyebrow><h1>See the trust chain<br/>in action.</h1></div><p>Interactive product examples, not a live workspace. All content is synthetic; nothing connects to enterprise systems. Locally tested foundations and future agent concepts are shown together for explanation.</p></div><DemoShowcase/><div className="demo-bottom"><p>Want to discuss your organisation&apos;s use case? Start with a conversation.</p><EmailCTA kind="demo">Request a Demo</EmailCTA></div></div>;}
