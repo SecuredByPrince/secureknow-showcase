@@ -1,4 +1,5 @@
 import { ContactEmail } from '../components/contact-email';
+import { Architecture } from '../components/architecture';
 import { DemoShowcase } from '../components/demos';
 import { Journey } from '../components/journey';
 import { EmailCTA, Eyebrow, Icon } from '../components/primitives';
@@ -42,11 +43,7 @@ export default function Home() {
         </div></section>
         <section className="section security-section" id="security"><div className="container security-grid">
             <div><Eyebrow>Security and governance</Eyebrow><h2>AI proposes.<br/>Trusted services enforce.</h2><p>Permission checks happen before evidence enters AI context. Sensitive actions require explicit authority. The model cannot grant itself access.</p><a href={previewLink('policy')} className="inline-link">See the Policy Decision Preview<Icon name="arrow"/></a></div>
-            <ul className="security-list">
-                <li><Icon name="shield"/><div><h3>Current permissions, current evidence</h3><p>The private foundations recheck SQL permissions and published versions. A search index is never the access authority.</p></div></li>
-                <li><Icon name="policy"/><div><h3>Policy outside the model</h3><p>Typed rules determine outcomes. Questions, documents and model output remain untrusted input.</p></div></li>
-                <li><Icon name="people"/><div><h3>Human control, traceable outcomes</h3><p>Confirmation, independent approval and confirmed execution are separate. Operational agents and Trust Passports are planned.</p></div></li>
-            </ul>
+            <Architecture/>
         </div><div className="container architecture-note"><p>Planned integrations: Microsoft Foundry and Azure AI Search for embeddings, hybrid retrieval and grounded answers. Bounded orchestration, secure tools, LLMOps and AgentOps still require live evaluation.</p><a href={REFERENCE}>Read the Reference Architecture<Icon name="arrow"/></a></div></section>
         <section className="section compact-section surface" id="use-cases"><div className="container">
             <div className="section-heading"><div><Eyebrow>Practical use cases</Eyebrow><h2>Built around the work.</h2></div><p>The intended first workflow is a SecureKnow-native internal IT support request, with no automated access provisioning.</p></div>

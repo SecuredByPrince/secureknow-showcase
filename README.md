@@ -84,7 +84,7 @@ The Python reference repository is documentation and examples, not this website.
 ## Browser regression checks
 
 `tests/production-check.py` uses Playwright Chromium and axe-core supplied by your QA
-environment. Set `SHOWCASE_QA_ROOT` to that environment, or set `AXE_PATH` explicitly.
+environment. Set `SHOWCASE_QA_ROOT` to that environment, or set `SHOWCASE_AXE_PATH` explicitly.
 Set `SHOWCASE_BASE_URL` to the local export or production origin and run
 `python tests/browser-check.py`. Screenshots and JSON evidence go to
 `SHOWCASE_QA_OUTPUT`. The suite checks all seven previews, actual links, encoded email

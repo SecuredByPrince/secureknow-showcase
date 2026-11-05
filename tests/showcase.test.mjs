@@ -5,6 +5,13 @@ import {resolve} from 'node:path';
 import {CONTACT,emailLink,subjects,roadmap,partnerCategories} from '../src/lib/content.ts';
 import {DEMOS,exampleDecision,validDraft,WORKFLOW_STEPS,parsePreview,previewLink,sampleAnswer,compareSamples,reviewSamples} from '../src/lib/demo.ts';
 import {validateEnvironment} from '../scripts/environment.mjs';
+
+test('Architecture visual presents ordered trust boundaries and truthful integration status',()=>{
+    const source=readFileSync(new URL('../src/components/architecture.tsx',import.meta.url),'utf8');
+    for(const title of ['Verify identity','Authorise knowledge','Retrieve evidence','Apply policy','Require human authority','Govern agent actions'])assert(source.includes(title));
+    for(const status of ['Live Entra verification pending','Live search / RAG pending','Planned capability','no execution here'])assert(source.includes(status));
+    assert(source.includes('<ol>'));assert(source.includes('<figcaption'));
+});
 test('Netlify static deployment uses out, parity security headers and a required production origin',()=>{
     const config=readFileSync(new URL('../netlify.toml',import.meta.url),'utf8');
     assert.match(config,/command = "npm run build"/);assert.match(config,/publish = "out"/);

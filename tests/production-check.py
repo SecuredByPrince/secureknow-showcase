@@ -302,7 +302,7 @@ with sync_playwright() as p:
         external=browser.new_page()
         external.goto(BASE+'/')
         external.get_by_role('link',name='Reference architecture on GitHub',exact=True).click()
-        external.wait_for_url(REFERENCE+'*')
+        external.wait_for_url(REFERENCE+'*',wait_until='domcontentloaded')
         assert external.url.rstrip('/')==REFERENCE
         external.close()
     assert not errors,errors
